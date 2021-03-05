@@ -1,4 +1,6 @@
-# mcauto
+# MORSE Code Automation
+
+This project is also known as ```mcauto```.
 
 ## Synopsis
 
