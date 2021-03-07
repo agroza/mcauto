@@ -10,9 +10,10 @@ unit Engine;
 
 interface
 
-procedure InitTiming(const AValue: Word);
 procedure InitDotFrequency(const AValue: Word);
 procedure InitDashFrequency(const AValue: Word);
+
+procedure InitTiming(const AValue: Word);
 
 procedure Encode(const AString: String);
 procedure Decode(var AString: String);

@@ -10,6 +10,7 @@ program mcauto;
 
 uses
   Consts,
+  Config,
   Crt,
   Engine,
   Routines,
@@ -37,28 +38,44 @@ begin
   VideoWriteStringAt(2, 25, sStatusBarText, clStatusBarFore, clStatusBarBack);
 end;
 
-procedure UIUpdateSpeed(const ASpeed: Word);
+procedure UIUpdateTiming;
 begin
   VideoWriteRegion(18, 1, 3, 1, cSpace, VideoAttribute(clTitleBarFore, clTitleBarBack));
-  VideoWriteStringAt(18, 1, IntToStr(ASpeed), clTitleBarFore, clTitleBarBack);
+  VideoWriteStringAt(18, 1, IntToStr(GConfig.DotTiming), clTitleBarFore, clTitleBarBack);
 end;
 
-procedure UIUpdateDotFrequency(const AValue: Word);
+procedure UIUpdateDotFrequency;
 begin
   VideoWriteRegion(32, 1, 3, 1, cSpace, VideoAttribute(clTitleBarFore, clTitleBarBack));
-  VideoWriteStringAt(32, 1, IntToStr(AValue), clTitleBarFore, clTitleBarBack);
+  VideoWriteStringAt(32, 1, IntToStr(GConfig.DotFrequency), clTitleBarFore, clTitleBarBack);
 end;
 
-procedure UIUpdateDashFrequency(const AValue: Word);
+procedure UIUpdateDashFrequency;
 begin
   VideoWriteRegion(48, 1, 3, 1, cSpace, VideoAttribute(clTitleBarFore, clTitleBarBack));
-  VideoWriteStringAt(48, 1, IntToStr(AValue), clTitleBarFore, clTitleBarBack);
+  VideoWriteStringAt(48, 1, IntToStr(GConfig.DashFrequency), clTitleBarFore, clTitleBarBack);
+end;
+
+procedure UIUpdateAll;
+begin
+  UIUpdateTiming;
+  UIUpdateDotFrequency;
+  UIUpdateDashFrequency;
 end;
 
 procedure UIUpdateStatus(const AStatus: TStatus);
 begin
   VideoWriteRegion(66, 1, 9, 1, cSpace, VideoAttribute(clTitleBarFore, clTitleBarBack));
   VideoWriteStringAt(66, 1, sStatusStrings[AStatus], clTitleBarFore, clTitleBarBack);
+end;
+
+procedure UIShowMsg(const AMessage: String);
+begin
+  TextColor(clHighlight);
+  Write(AMessage);
+
+  TextColor(clNormal);
+  Writeln;
 end;
 
 function UIShowMsgReadValue(const AMessage: String; const ADefault: Word): Word;
@@ -73,6 +90,21 @@ begin
   Readln(LValue);
 
   UIShowMsgReadValue := StrToIntDef(LValue, ADefault);
+end;
+
+procedure UIShowInlineHelp;
+begin
+  Writeln;
+
+  TextColor(clHighlight);
+  Writeln(sInlineHelp);
+
+  TextColor(clNormal);
+  Writeln(sInlineHelp1);
+  Writeln(sInlineHelp2);
+  Writeln(sInlineHelp3);
+
+  Writeln;
 end;
 
 procedure UIEncode(const AMessage: String);
@@ -100,13 +132,12 @@ begin
   LInput := sEmpty;
   LRepeat := sEmpty;
 
-  InitTiming(kDefaultSpeed);
-  InitDotFrequency(kDefaultDotFrequency);
-  InitDashFrequency(kDefaultDashFrequency);
+  InitDotFrequency(GConfig.DotFrequency);
+  InitDashFrequency(GConfig.DashFrequency);
 
-  UIUpdateSpeed(kDefaultSpeed);
-  UIUpdateDotFrequency(kDefaultDotFrequency);
-  UIUpdateDashFrequency(kDefaultDashFrequency);
+  InitTiming(GConfig.DotTiming);
+
+  UIUpdateAll;
   UIUpdateStatus(stListening);
 
   while True do
@@ -117,6 +148,16 @@ begin
       kKeyExtended:
         begin
           case ReadKey of
+            kKeyF1:
+              UIShowInlineHelp;
+
+            kKeyF2:
+              begin
+                ClrScr;
+
+                LInput := sEmpty;
+              end;
+
             kKeyF3:
               begin
                 Write(LRepeat);
@@ -126,23 +167,49 @@ begin
 
             kKeyF5:
               begin
-                LValue := UIShowMsgReadValue(sEnterNewSpeed, kDefaultSpeed);
-                InitTiming(LValue);
-                UIUpdateSpeed(LValue);
+                GConfig.DotTiming := UIShowMsgReadValue(sEnterNewSpeed, kDefaultDotTiming);
+                InitTiming(GConfig.DotTiming);
+
+                UIUpdateTiming;
               end;
 
             kKeyF6:
               begin
-                LValue := UIShowMsgReadValue(sEnterNewDotFrequency, kDefaultDotFrequency);
-                InitDotFrequency(LValue);
-                UIUpdateDotFrequency(LValue);
+                GConfig.DotFrequency := UIShowMsgReadValue(sEnterNewDotFrequency, kDefaultDotFrequency);
+                InitDotFrequency(GConfig.DotFrequency);
+
+                UIUpdateDotFrequency;
               end;
 
             kKeyF7:
               begin
-                LValue := UIShowMsgReadValue(sEnterNewDashFrequency, kDefaultDashFrequency);
-                InitDashFrequency(LValue);
-                UIUpdateDashFrequency(LValue);
+                GConfig.DashFrequency := UIShowMsgReadValue(sEnterNewDashFrequency, kDefaultDashFrequency);
+                InitDashFrequency(GConfig.DashFrequency);
+
+                UIUpdateDashFrequency;
+              end;
+
+            kKeyF8:
+              begin
+                ConfigDefault;
+
+                UIUpdateAll;
+                UIShowMsg(sConfigDefaultLoaded);
+              end;
+
+            kKeyF9:
+              begin
+                ConfigLoad;
+
+                UIUpdateAll;
+                UIShowMsg(sConfigLoaded);
+              end;
+
+            kKeyF10:
+              begin
+                ConfigSave;
+
+                UIShowMsg(sConfigSaved);
               end;
 
           end;
@@ -208,5 +275,11 @@ end;
 
 begin
   WriteProgramHeader;
+
+  if not ConfigLoad then
+  begin
+    ConfigDefault;
+  end;
+
   StartProgram;
 end.

@@ -18,17 +18,30 @@ const
   { program stringtable }
   sEmpty                  = '';
 
-  sProgramTitle           = 'MORSE Code Automation  VER: 0.2 REV: A';
+  sProgramTitle           = 'MORSE Code Automation  VER: 0.2 REV: D';
   sProgramCopyright       = 'Copyright (C) 1998-2021 Microprogramming TECHNIQUES';
   sProgramAuthor          = 'Programming/PC Code: Alexandru Groza';
   sProgramRights          = 'All rights reserved.';
 
   sTitleBarText           = 'MCAUTO ³ SPEED:    wpm ³ DOT:     kHz ³ DASH:     kHz ³ Status:';
-  sStatusBarText          = 'ESC - Exit ³ ENTER - Encode ³ F3 - Repeat ³ F5 - Speed ³ F6 - Dot ³ F7 - Dash';
+  sStatusBarText          = 'ESC - Exit ³ ENTER - Encode ³ F1 - Help ³ F2 - Clear ³ F3 - Repeat';
+
+  sInlineHelp             = 'Inline Help';
+  sInlineHelp1            = 'F5 - Speed' + #13#10 +
+                            'F6 - Dot Frequency' + #13#10 +
+                            'F7 - Dash Frequency';
+  sInlineHelp2            = 'F8 - Default Configuration' + #13#10 +
+                            'F9 - Load Configuration' + #13#10 +
+                            'F10 - Save Configuration';
+  sInlineHelp3            = 'F12 - Clear Screen';
 
   sEnterNewSpeed          = 'New speed in wpm: ';
   sEnterNewDotFrequency   = 'New dot frequency in kHz: ';
   sEnterNewDashFrequency  = 'New dash frequency in kHz: ';
+
+  sConfigDefaultLoaded    = 'Default configuration loaded.';
+  sConfigLoaded           = 'Configuration loaded.';
+  sConfigSaved            = 'Configuration saved.';
 
   sStatusStrings: array[TStatus] of String[9] = (
     'Listening',
@@ -46,10 +59,15 @@ const
   kKeyEnter               = #13;
   kKeyEscape              = #27;
   kKeyExtended            = #00;
+  kKeyF1                  = #59;
+  kKeyF2                  = #60;
   kKeyF3                  = #61;
   kKeyF5                  = #63;
   kKeyF6                  = #64;
   kKeyF7                  = #65;
+  kKeyF8                  = #66;
+  kKeyF9                  = #67;
+  kKeyF10                 = #68;
 
   { MORSE codes for numbers }
   kMCNumbers: array['0'..'9'] of String[5] = (
@@ -99,7 +117,7 @@ const
   kDefaultDotFrequency    = 640;
   kDefaultDashFrequency   = 630;
 
-  kDefaultSpeed           = 20;
+  kDefaultDotTiming       = 20;
 
   { color constants }
   clNormal                = LightGray;
@@ -110,6 +128,14 @@ const
 
   clStatusBarFore         = White;
   clStatusBarBack         = Blue;
+
+  { file masks }
+  fmBINFiles              = 'bin';
+
+  { file mode constants }
+  fmReadOnly              = 0;
+  fmWriteOnly             = 1;
+  fmReadWrite             = 2;
 
 implementation
 

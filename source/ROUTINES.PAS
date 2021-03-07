@@ -14,7 +14,13 @@ function StrToIntDef(const AString: String; const ADefault: Longint): Longint;
 function IntToStr(const AInteger: Longint): String;
 function LowCase(const ACharacter: Char): Char;
 
+function FileExists(const AFileName: String): Boolean;
+function ReplaceFileExt(const AFileName, AExtension: String): String;
+
 implementation
+
+uses
+  Consts;
 
 { public declarations }
 
@@ -55,6 +61,41 @@ var
 begin
   Str(AInteger, S);
   IntToStr := S;
+end;
+
+function FileExists(const AFileName: String): Boolean;
+var
+  LFile: File of Byte;
+
+begin
+{$I-}
+  Assign(LFile, AFileName);
+  Reset(LFile);
+  Close(LFile);
+{$I+}
+
+  FileExists := IOResult = 0;
+end;
+
+function ReplaceFileExt(const AFileName, AExtension: String): String;
+const
+  cFullStop = '.';
+
+var
+  I: Byte;
+
+begin
+  for I := Length(AFileName) downto 1 do
+    if AFileName[I] = cFullStop then
+      Break;
+
+  if (I = 1) and (AFileName[I] <> cFullStop) then
+  begin
+    ReplaceFileExt := AFileName;
+  end else
+  begin
+    ReplaceFileExt := Copy(AFileName, 1, I) + AExtension;
+  end;
 end;
 
 end.

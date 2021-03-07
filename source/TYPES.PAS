@@ -11,6 +11,13 @@ unit Types;
 interface
 
 type
+  TConfig = record
+    DotFrequency: Word;
+    DashFrequency: Word;
+
+    DotTiming: Word;
+  end;
+
   TTiming = record
     Dot: Word;
     Dash: Word;
