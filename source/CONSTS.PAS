@@ -18,7 +18,7 @@ const
   { program stringtable }
   sEmpty                  = '';
 
-  sProgramTitle           = 'MORSE Code Automation  VER: 0.2 REV: D';
+  sProgramTitle           = 'MORSE Code Automation  VER: 0.3 REV: A';
   sProgramCopyright       = 'Copyright (C) 1998-2021 Microprogramming TECHNIQUES';
   sProgramAuthor          = 'Programming/PC Code: Alexandru Groza';
   sProgramRights          = 'All rights reserved.';
@@ -33,7 +33,6 @@ const
   sInlineHelp2            = 'F8 - Default Configuration' + #13#10 +
                             'F9 - Load Configuration' + #13#10 +
                             'F10 - Save Configuration';
-  sInlineHelp3            = 'F12 - Clear Screen';
 
   sEnterNewSpeed          = 'New speed in wpm: ';
   sEnterNewDotFrequency   = 'New dot frequency in kHz: ';
