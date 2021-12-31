@@ -18,14 +18,19 @@ uses
 
 procedure WriteProgramHeader;
 begin
-  TextColor(clHighlight);
-  Writeln(sProgramTitle);
+  VideoWriteNewln;
 
-  TextColor(clNormal);
-  Writeln(sProgramCopyright);
-  Writeln(sProgramAuthor);
-  Writeln(sProgramRights);
-  Writeln;
+  VideoSetBackground(clBlack);
+
+  VideoSetForeground(clHighlight);
+  VideoWriteln(sProgramTitle);
+
+  VideoSetForeground(clNormal);
+  VideoWriteln(sProgramCopyright);
+  VideoWriteln(sProgramAuthor);
+  VideoWriteln(sProgramRights);
+
+  VideoWriteNewln;
 end;
 
 begin

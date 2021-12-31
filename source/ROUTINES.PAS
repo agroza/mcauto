@@ -86,8 +86,12 @@ var
 
 begin
   for I := Length(AFileName) downto 1 do
+  begin
     if AFileName[I] = cFullStop then
+    begin
       Break;
+    end;
+  end;
 
   if (I = 1) and (AFileName[I] <> cFullStop) then
   begin

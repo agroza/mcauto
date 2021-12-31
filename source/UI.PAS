@@ -25,6 +25,14 @@ uses
 
 { private declarations }
 
+procedure InitFromConfig;
+begin
+  InitDotFrequency(GConfig.DotFrequency);
+  InitDashFrequency(GConfig.DashFrequency);
+
+  InitTiming(GConfig.DotTiming);
+end;
+
 procedure UIDraw;
 begin
   VideoWriteRegion(1, 1, 80, 1, cSpace, VideoAttribute(clTitleBarFore, clTitleBarBack));
@@ -127,10 +135,7 @@ begin
   LInput := sEmpty;
   LRepeat := sEmpty;
 
-  InitDotFrequency(GConfig.DotFrequency);
-  InitDashFrequency(GConfig.DashFrequency);
-
-  InitTiming(GConfig.DotTiming);
+  InitFromConfig;
 
   UIUpdateAll;
   UIUpdateStatus(stListening);
@@ -187,6 +192,7 @@ begin
             kKeyF8:
               begin
                 ConfigDefault;
+                InitFromConfig;
 
                 UIUpdateAll;
                 UIShowMsg(sConfigDefaultLoaded);
@@ -195,6 +201,7 @@ begin
             kKeyF9:
               begin
                 ConfigLoad;
+                InitFromConfig;
 
                 UIUpdateAll;
                 UIShowMsg(sConfigLoaded);
@@ -217,7 +224,7 @@ begin
             Delete(LInput, Length(LInput), 1);
             VideoWriteCharAt(WhereX, WhereY + 2, cSpace);
             GotoXY(Pred(WhereX), WhereY);
-           end;
+          end;
         end;
 
       kKeyEnter:
@@ -252,7 +259,7 @@ begin
   LSaveY := WhereY;
 
   GetMem(LVideoRAMData, kVGARAMSize);
-  VideoSaveScreen(LVideoRAMData);
+  VideoGetScreen(LVideoRAMData);
   VideoClearScreen;
   VideoEnableHighColors;
 
@@ -264,7 +271,7 @@ begin
   Window(k80x25Left, k80x25Top, k80x25Width, k80x25Height);
 
   VideoDisableHighColors;
-  VideoRestoreScreen(LVideoRAMData);
+  VideoSetScreen(LVideoRAMData);
   FreeMem(LVideoRAMData, kVGARAMSize);
 
   GotoXY(k80x25Left, LSaveY);
